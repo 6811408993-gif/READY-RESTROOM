@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบนำทางและแจ้งปัญหาห้องน้ำมหาวิทยาลัย - Campus Restroom Navigator</title>
+    <title>ระบบนำทางและแจ้งปัญหาห้องน้ำ - มหาวิทยาลัยราชภัฏจันทรเกษม</title>
 
     <!-- Font & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -57,7 +57,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: #fff;
         }
@@ -65,6 +65,17 @@
         .logo i {
             color: var(--secondary);
             font-size: 1.8rem;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-subtitle {
+            font-size: 0.8rem;
+            font-weight: 300;
+            color: #cbd5e1;
         }
 
         .nav-btns {
@@ -170,17 +181,33 @@
         .building-card {
             background: var(--card-bg);
             border-radius: 20px;
-            padding: 20px;
+            padding: 0 0 20px 0;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
             border-top: 5px solid var(--primary);
+            display: flex;
+            flex-direction: column;
         }
 
         .building-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .building-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .building-card-content {
+            padding: 20px 20px 0 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .building-card h3 {
@@ -198,6 +225,7 @@
             font-size: 0.85rem;
             font-weight: 600;
             margin-bottom: 15px;
+            align-self: flex-start;
         }
 
         .floor-select-group {
@@ -229,7 +257,8 @@
         .card-actions {
             display: flex;
             gap: 10px;
-            margin-top: 15px;
+            margin-top: auto;
+            padding-top: 15px;
         }
 
         .btn-action {
@@ -256,7 +285,7 @@
         .modal {
             display: none;
             position: fixed;
-            top:0; left:0; width:100%; height:100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6);
             backdrop-filter: blur(5px);
             z-index: 200;
@@ -366,7 +395,10 @@
     <header>
         <div class="logo">
             <i class="fa-solid fa-restroom"></i>
-            <span>ห้องน้ำพร้อมใช้</span>
+            <div class="logo-text">
+                <span>ห้องน้ำพร้อมใช้</span>
+                <span class="logo-subtitle">มหาวิทยาลัยราชภัฏจันทรเกษม</span>
+            </div>
         </div>
         <div class="nav-btns">
             <button class="btn-nav active" onclick="switchPage('user-page', this)">
@@ -441,7 +473,7 @@
                     <input type="text" id="modalBuildingName" readonly style="background:#f1f5f9;">
                 </div>
                 <div class="form-group">
-                    <label>เลือกชั้น (1-7)</label>
+                    <label>เลือกชั้น</label>
                     <select id="modalFloorSelect" required></select>
                 </div>
                 <div class="form-group">
@@ -469,12 +501,44 @@
 
     <!-- JavaScript Logic -->
     <script>
-        // ข้อมูลพิกัดตึกเรียน
+        // ข้อมูลพิกัดตึกเรียน ช่วงชั้นเริ่มต้น-สูงสุด และลิงก์รูปภาพ
         const buildings = [
-            { id: 34, name: "ตึก 34", lat: 13.819279200044312, lng: 100.57869203853468 },
-            { id: 29, name: "ตึก 29", lat: 13.820162252306277, lng: 100.57870233648704 },
-            { id: 15, name: "ตึก 15", lat: 13.820485217498176, lng: 100.57897189849201 },
-            { id: 28, name: "ตึก 28", lat: 13.820823737458843, lng: 100.57889459759403 }
+            { 
+                id: 34, 
+                name: "ตึก 34", 
+                startFloor: 1,
+                floors: 8, 
+                lat: 13.819279200044312, 
+                lng: 100.57869203853468, 
+                image: "https://media.discordapp.net/attachments/1139633950864715936/1557846502720671854/S__27590667.jpg?ex=6ac9491d&is=6ac7f79d&hm=ca1df5420e72b925ca750f55c18363151abba6843b0418169c629d2aae151467&=&format=webp&width=1280&height=960" 
+            },
+            { 
+                id: 29, 
+                name: "ตึก 29", 
+                startFloor: 1,
+                floors: 9, 
+                lat: 13.820162252306277, 
+                lng: 100.57870233648704, 
+                image: "https://media.discordapp.net/attachments/1139633950864715936/1557846503853269082/S__27590663.jpg?ex=6ac9491d&is=6ac7f79d&hm=a52d7abbfe56b21b229de2b01e0b85c75187271b89c6d8074690f4b5617567f5&=&format=webp&width=1280&height=960" 
+            },
+            { 
+                id: 15, 
+                name: "ตึก 15", 
+                startFloor: 5, // เริ่มต้นตั้งแต่ชั้น 5
+                floors: 15, 
+                lat: 13.820485217498176, 
+                lng: 100.57897189849201, 
+                image: "https://media.discordapp.net/attachments/1139633950864715936/1557846504155123773/S__27590662.jpg?ex=6ac9491d&is=6ac7f79d&hm=9c0dfc49dbfd5a6394e6fb2504253adf596e72f8d81d11d9fe874f25073e1eac&=&format=webp&width=1280&height=960" 
+            },
+            { 
+                id: 28, 
+                name: "ตึก 28", 
+                startFloor: 1,
+                floors: 8, 
+                lat: 13.820823737458843, 
+                lng: 100.57889459759403, 
+                image: "https://media.discordapp.net/attachments/1139633950864715936/1557846504461434940/S__27590661.jpg?ex=6ac9491e&is=6ac7f79e&hm=107bed89498aa96b91371ba99d0f10c4b7ca8debc7b461b727ed55a8b42eaac6&=&format=webp&width=1280&height=960" 
+            }
         ];
 
         // Mockup ข้อมูลรายการแจ้งปัญหาเริ่มต้น
@@ -490,27 +554,32 @@
 
             buildings.forEach(b => {
                 let floorOptions = '';
-                for(let i=1; i<=7; i++) {
+                for(let i = b.startFloor; i <= b.floors; i++) {
                     floorOptions += `<option value="${i}">ชั้น ${i}</option>`;
                 }
 
+                const floorBadgeText = b.startFloor > 1 ? `ชั้น ${b.startFloor}-${b.floors} (พร้อมใช้งาน)` : `${b.floors} ชั้น (พร้อมใช้งาน)`;
+
                 const cardHtml = `
                     <div class="building-card" id="card-b-${b.id}">
-                        <h3>${b.name}</h3>
-                        <span class="distance-badge" id="dist-${b.id}">7 ชั้น (พร้อมใช้งาน)</span>
-                        <div class="floor-select-group">
-                            <label><i class="fa-solid fa-layer-group"></i> เลือกชั้นที่จะไป:</label>
-                            <select id="select-floor-${b.id}">
-                                ${floorOptions}
-                            </select>
-                        </div>
-                        <div class="card-actions">
-                            <button class="btn-action btn-map" onclick="openGoogleMap(${b.lat}, ${b.lng})">
-                                <i class="fa-solid fa-location-arrow"></i> นำทาง
-                            </button>
-                            <button class="btn-action btn-report" onclick="openReportModal(${b.id}, '${b.name}')">
-                                <i class="fa-solid fa-triangle-exclamation"></i> แจ้งปัญหา
-                            </button>
+                        <img src="${b.image}" alt="${b.name}" class="building-img" onerror="this.onerror=null; this.src='https://via.placeholder.com/600x400?text=Restroom+Area';">
+                        <div class="building-card-content">
+                            <h3>${b.name}</h3>
+                            <span class="distance-badge" id="dist-${b.id}">${floorBadgeText}</span>
+                            <div class="floor-select-group">
+                                <label><i class="fa-solid fa-layer-group"></i> เลือกชั้นที่จะไป:</label>
+                                <select id="select-floor-${b.id}">
+                                    ${floorOptions}
+                                </select>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn-action btn-map" onclick="openGoogleMap(${b.lat}, ${b.lng})">
+                                    <i class="fa-solid fa-location-arrow"></i> นำทาง
+                                </button>
+                                <button class="btn-action btn-report" onclick="openReportModal(${b.id}, '${b.name}', ${b.startFloor}, ${b.floors})">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> แจ้งปัญหา
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -555,7 +624,8 @@
 
                     buildings.forEach(b => {
                         const dist = calculateDistance(userLat, userLng, b.lat, b.lng);
-                        document.getElementById(`dist-${b.id}`).innerText = `ห่างจากคุณประมาณ ${Math.round(dist)} เมตร`;
+                        const floorText = b.startFloor > 1 ? `ชั้น ${b.startFloor}-${b.floors}` : `${b.floors} ชั้น`;
+                        document.getElementById(`dist-${b.id}`).innerText = `ห่างจากคุณประมาณ ${Math.round(dist)} เมตร (${floorText})`;
                         
                         if (dist < minDistance) {
                             minDistance = dist;
@@ -594,13 +664,13 @@
         }
 
         // เปิด Modal แจ้งปัญหา
-        function openReportModal(bId, bName) {
+        function openReportModal(bId, bName, startFloor, totalFloors) {
             document.getElementById('modalBuildingId').value = bId;
             document.getElementById('modalBuildingName').value = bName;
 
             const floorSelect = document.getElementById('modalFloorSelect');
             floorSelect.innerHTML = '';
-            for(let i=1; i<=7; i++) {
+            for(let i = startFloor; i <= totalFloors; i++) {
                 floorSelect.innerHTML += `<option value="ชั้น ${i}">ชั้น ${i}</option>`;
             }
 
